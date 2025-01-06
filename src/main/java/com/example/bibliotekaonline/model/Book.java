@@ -1,14 +1,11 @@
 package com.example.bibliotekaonline.model;
 
-
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 
-import java.util.Date;
-
+import java.time.Year;
+import java.util.List;
 
 @Data
 @Entity
@@ -16,23 +13,39 @@ public class Book {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    int id;
+    private Long id;
 
-    String title;
+    @NotBlank
+    @Size(max = 255)
+    @Column(nullable = false)
+    private String title;
 
-    String authors;
+    @NotBlank
+    @Size(max = 255)
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Author> authors;
 
-    float averageRating;
+    @Size(max = 500)
+    private String categories;
 
-    String languageCode;
+    @Size(max = 500)
+    private String thumbnail;
 
-    int numPages;
+    @Lob
+    private String description;
 
-    int ratingsCount;
+    private Year publishedYear;
 
-    int textReviewsCount;
+    @Min(0)
+    private Integer ratingsCount;
 
-    Date publicationDate;
+    @DecimalMin("0.0")
+    @DecimalMax("5.0")
+    private Double averageRating;
 
-    String publisher;
+    @Min(1)
+    private Integer numPages;
+
+    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL,orphanRemoval = true)
+    private List<Comment> comments;
 }
