@@ -15,37 +15,35 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotBlank
-    @Size(max = 255)
-    @Column(nullable = false)
     private String title;
 
-    @NotBlank
-    @Size(max = 255)
-    @OneToMany(mappedBy = "book", cascade = CascadeType.ALL, orphanRemoval = true)
+    @ManyToMany
+    @JoinTable(
+            name = "book_author",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
     private List<Author> authors;
 
-    @Size(max = 500)
     private String categories;
 
-    @Size(max = 500)
     private String thumbnail;
 
-    @Lob
+    @Column(columnDefinition="TEXT")
     private String description;
 
     private Year publishedYear;
 
-    @Min(0)
     private Integer ratingsCount;
 
-    @DecimalMin("0.0")
-    @DecimalMax("5.0")
     private Double averageRating;
 
-    @Min(1)
     private Integer numPages;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Comment> comments;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 }

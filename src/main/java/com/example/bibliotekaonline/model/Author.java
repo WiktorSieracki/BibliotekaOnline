@@ -1,11 +1,10 @@
 package com.example.bibliotekaonline.model;
 
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -16,5 +15,8 @@ public class Author {
     private Long id;
 
     private String name;
+
+    @ManyToMany(mappedBy = "authors")
+    private List<Book> books;
 
 }
