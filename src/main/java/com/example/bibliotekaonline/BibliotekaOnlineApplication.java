@@ -20,6 +20,6 @@ public class BibliotekaOnlineApplication implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        csvService.loadCSVData();
+//        csvService.loadCSVData();
     }
 }

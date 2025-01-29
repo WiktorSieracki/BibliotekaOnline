@@ -29,6 +29,17 @@ public class CSVService {
         try (CSVReader reader = new CSVReader(new InputStreamReader(new ClassPathResource("data.csv").getInputStream()))) {
             List<String[]> rows = reader.readAll();
             for (String[] row : rows.subList(1, rows.size())) { // Skip header row
+                boolean hasNullValue = false;
+                for (String value : row) {
+                    if (value == null || value.isEmpty()) {
+                        hasNullValue = true;
+                        break;
+                    }
+                }
+                if (hasNullValue) {
+                    continue;
+                }
+
                 String title = row[0];
                 String authorsStr = row[1];
                 String categories = row[2];
