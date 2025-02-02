@@ -13,8 +13,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.time.Year;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CSVService {
@@ -49,15 +48,18 @@ public class CSVService {
                 int ratingsCount = Integer.parseInt(row[6]);
                 double averageRating = Double.parseDouble(row[7]);
                 int numPages = Integer.parseInt(row[8]);
-                System.out.println(title);
+//                System.out.println(title);
 
                 List<Author> authors = new ArrayList<>();
                 for (String authorName : authorsStr.split(";")) {
-                    Author author = authorRepository.findByName(authorName.trim());
-                    if (author == null) {
+                    Optional<Author> authorOptional = authorRepository.findByName(authorName.trim());
+                    Author author;
+                    if (authorOptional.isEmpty()) {
                         author = new Author();
                         author.setName(authorName.trim());
                         authorRepository.save(author);
+                    }else {
+                        author = authorOptional.get();
                     }
                     authors.add(author);
                 }
@@ -65,7 +67,7 @@ public class CSVService {
                 Book book = new Book();
                 book.setTitle(title);
                 book.setAuthors(authors);
-                book.setCategories(categories);
+                book.setCategories(Collections.singletonList(categories));
                 book.setThumbnail(thumbnail);
                 book.setDescription(description);
                 book.setPublishedYear(publishedYear);

@@ -32,6 +32,30 @@
       <div th:replace="~{fragments :: header}"></div>
 
       <div class="main container mt-3">
+        <form th:action="@{/books/search}" method="get" class="mb-3">
+          <div class="input-group mb-3">
+            <select name="searchBy" class="form-select">
+              <option value="title" th:selected="${searchBy == 'title'}">
+                Title
+              </option>
+              <option value="author" th:selected="${searchBy == 'author'}">
+                Author
+              </option>
+              <option value="category" th:selected="${searchBy == 'category'}">
+                Category
+              </option>
+            </select>
+            <input
+              type="text"
+              name="query"
+              class="form-control"
+              placeholder="Search..."
+              th:value="${query}"
+            />
+            <button class="btn btn-primary" type="submit">Search</button>
+          </div>
+        </form>
+
         <nav th:replace="~{fragments :: page-navigation}"></nav>
 
         <div class="row">

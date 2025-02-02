@@ -1,7 +1,6 @@
 package com.example.bibliotekaonline.model;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 import lombok.Data;
 
 import java.time.Year;
@@ -14,10 +13,11 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
+    
+    // @Column(unique = true)
     private String title;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -25,7 +25,10 @@ public class Book {
     )
     private List<Author> authors;
 
-    private String categories;
+    @ElementCollection
+    @CollectionTable(name = "book_categories", joinColumns = @JoinColumn(name = "book_id"))
+    @Column(name = "categories")
+    private List<String> categories;
 
     private String thumbnail;
 
