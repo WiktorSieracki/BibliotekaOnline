@@ -16,41 +16,14 @@ public class AuthorService {
     @Autowired
     private AuthorRepository authorRepository;
 
-    public Page<Author> getAllAuthors(Pageable pageable) {
-        return authorRepository.findAll(pageable);
-    }
-
-    public Optional<Author> getAuthorById(Long id) {
-        return authorRepository.findById(id);
-    }
 
     public Author saveAuthor(Author author) {
-        if (findByName(author.getName()).isEmpty()) {
-            return authorRepository.save(author);
-        }
-        return author;
-    }
-
-    public void deleteAuthor(Long id) {
-        authorRepository.deleteById(id);
+        Optional<Author> existingAuthor = authorRepository.findFirstByName(author.getName());
+        return existingAuthor.orElseGet(() -> authorRepository.save(author));
     }
 
     public Optional<Author> findByName(String name) {
-        return authorRepository.findByName(name);
+        return authorRepository.findFirstByName(name);
     }
 
-    public AuthorDTO convertToDTO(Author author) {
-        AuthorDTO authorDTO = new AuthorDTO();
-        authorDTO.setId(author.getId());
-        authorDTO.setName(author.getName());
-        return authorDTO;
-    }
-
-
-    public Author convertToEntity(AuthorDTO authorDTO) {
-        Author author = new Author();
-        author.setId(authorDTO.getId());
-        author.setName(authorDTO.getName());
-        return author;
-    }
 }

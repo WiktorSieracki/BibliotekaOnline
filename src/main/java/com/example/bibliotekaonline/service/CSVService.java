@@ -19,10 +19,10 @@ import java.util.*;
 public class CSVService {
 
     @Autowired
-    private BookRepository bookRepository;
+    private BookService bookService;
 
     @Autowired
-    private AuthorRepository authorRepository;
+    private AuthorService authorService;
 
     public void loadCSVData() {
         try (CSVReader reader = new CSVReader(new InputStreamReader(new ClassPathResource("data.csv").getInputStream()))) {
@@ -52,12 +52,12 @@ public class CSVService {
 
                 List<Author> authors = new ArrayList<>();
                 for (String authorName : authorsStr.split(";")) {
-                    Optional<Author> authorOptional = authorRepository.findByName(authorName.trim());
+                    Optional<Author> authorOptional = authorService.findByName(authorName.trim());
                     Author author;
                     if (authorOptional.isEmpty()) {
                         author = new Author();
                         author.setName(authorName.trim());
-                        authorRepository.save(author);
+                        authorService.saveAuthor(author);
                     }else {
                         author = authorOptional.get();
                     }
@@ -75,7 +75,7 @@ public class CSVService {
                 book.setAverageRating(averageRating);
                 book.setNumPages(numPages);
 
-                bookRepository.save(book);
+                bookService.saveBook(book);
             }
         } catch (IOException | CsvException e) {
             e.printStackTrace();

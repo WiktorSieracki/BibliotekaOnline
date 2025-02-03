@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.4.1'
     id 'io.spring.dependency-management' version '1.1.7'
+    id("se.solrike.sonarlint") version "2.1.0"
 }
 
 group = 'com.example'
@@ -10,6 +11,14 @@ version = '0.0.1-SNAPSHOT'
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(23)
+    }
+}
+
+sonarlint {
+    reports {
+        create("sarif") {
+            enabled.set(true)
+        }
     }
 }
 
@@ -31,9 +40,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    // https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api
-    // https://mvnrepository.com/artifact/com.opencsv/opencsv
     implementation 'com.opencsv:opencsv:5.9'
+    // https://mvnrepository.com/artifact/org.mapstruct/mapstruct
+//    implementation 'org.mapstruct:mapstruct:1.6.3'
     implementation 'jakarta.validation:jakarta.validation-api:3.1.0'
     implementation 'org.springframework.modulith:spring-modulith-starter-core'
     implementation 'org.springframework.modulith:spring-modulith-starter-jpa'

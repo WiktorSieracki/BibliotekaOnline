@@ -17,7 +17,7 @@ public class Book {
     // @Column(unique = true)
     private String title;
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
             name = "book_author",
             joinColumns = @JoinColumn(name = "book_id"),
@@ -46,7 +46,4 @@ public class Book {
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Comment> comments;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
 }

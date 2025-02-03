@@ -1,14 +1,20 @@
 package com.example.bibliotekaonline.service;
 
 import com.example.bibliotekaonline.dto.BookDTO;
+import com.example.bibliotekaonline.mapper.BookMapper;
 import com.example.bibliotekaonline.model.Author;
 import com.example.bibliotekaonline.model.Book;
+import com.example.bibliotekaonline.model.Comment;
 import com.example.bibliotekaonline.repository.BookRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -16,9 +22,10 @@ import java.util.stream.Collectors;
 public class BookService {
 
     @Autowired
-    private AuthorService authorService;
-    @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private AuthorService authorService;
 
 
     public Page<Book> getAllBooks(Pageable pageable) {
@@ -29,58 +36,23 @@ public class BookService {
         return bookRepository.findById(id);
     }
 
+    @Transactional
     public Book saveBook(Book book) {
-        book.setAuthors(book.getAuthors().stream().map(author -> {
-            Optional<Author> existingAuthor = authorService.findByName(author.getName());
-            return existingAuthor.orElse(author);
-        }).collect(Collectors.toList()));
+        List<Author> savedAuthors = book.getAuthors().stream()
+            .map(author -> authorService.saveAuthor(author))
+            .collect(Collectors.toList());
+        book.setAuthors(savedAuthors);
+
         return bookRepository.save(book);
     }
 
-    public void deleteBook(Long id) {
-        bookRepository.deleteById(id);
-    }
-
-    public BookDTO convertToDTO(Book book) {
-        BookDTO bookDTO = new BookDTO();
-        bookDTO.setId(book.getId());
-        bookDTO.setTitle(book.getTitle());
-        bookDTO.setCategories(book.getCategories());
-        bookDTO.setNumPages(book.getNumPages());
-        bookDTO.setPublishedYear(book.getPublishedYear());
-        bookDTO.setDescription(book.getDescription());
-        bookDTO.setThumbnail(book.getThumbnail());
-        bookDTO.setRatingsCount(book.getRatingsCount());
-        bookDTO.setAverageRating(book.getAverageRating());
-        bookDTO.setAuthors(book.getAuthors().stream().map(authorService::convertToDTO).collect(Collectors.toList()));
-        return bookDTO;
-    }
-
-    public Book convertToEntity(BookDTO bookDTO) {
-        Book book = new Book();
-        book.setId(bookDTO.getId());
-        book.setTitle(bookDTO.getTitle());
-        book.setCategories(bookDTO.getCategories());
-        book.setNumPages(bookDTO.getNumPages());
-        book.setPublishedYear(bookDTO.getPublishedYear());
-        book.setDescription(bookDTO.getDescription());
-        book.setThumbnail(bookDTO.getThumbnail());
-        book.setRatingsCount(bookDTO.getRatingsCount());
-        book.setAverageRating(bookDTO.getAverageRating());
-        book.setAuthors(bookDTO.getAuthors().stream().map(authorService::convertToEntity).collect(Collectors.toList()));
-        return book;
-    }
-
-    public Page<Book> searchBooks(String title, String author, String category, Pageable pageable) {
-        if (title != null && !title.isEmpty()) {
-            return searchBooksByTitle(title, pageable);
-        } else if (author != null && !author.isEmpty()) {
-            return searchBooksByAuthor(author, pageable);
-        } else if (category != null && !category.isEmpty()) {
-            return searchBooksByCategory(category, pageable);
-        } else {
-            return getAllBooks(pageable);
-        }
+    public Page<Book> searchBooks(String searchBy, String query, Pageable pageable) {
+        return switch (searchBy) {
+            case "title" -> searchBooksByTitle(query, pageable);
+            case "author" -> searchBooksByAuthor(query, pageable);
+            case "category" -> searchBooksByCategory(query, pageable);
+            case null, default -> getAllBooks(pageable);
+        };
     }
 
     public Page<Book> searchBooksByTitle(String title, Pageable pageable) {
@@ -93,6 +65,10 @@ public class BookService {
 
     public Page<Book> searchBooksByCategory(String category, Pageable pageable) {
         return bookRepository.findByCategoriesContainingIgnoreCase(category, pageable);
+    }
+
+    public List<Book> getMostPopularBooks() {
+        return bookRepository.findTop3ByOrderByAverageRatingDesc().stream().limit(4).toList();
     }
 
 }
