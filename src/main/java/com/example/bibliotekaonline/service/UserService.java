@@ -20,7 +20,7 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    @Transactional
+   @Transactional
     public User saveUser(User user) {
         return userRepository.save(user);
     }

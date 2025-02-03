@@ -22,7 +22,7 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
-    @Transactional
+   @Transactional
     public Comment saveComment(long bookId, CommentDTO commentDTO) {
         Book book = bookService.getBookById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
         Comment comment = CommentMapper.toEntity(commentDTO);

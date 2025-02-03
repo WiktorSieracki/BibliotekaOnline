@@ -36,7 +36,7 @@ public class BookService {
         return bookRepository.findById(id);
     }
 
-    @Transactional
+   @Transactional
     public Book saveBook(Book book) {
         List<Author> savedAuthors = book.getAuthors().stream()
             .map(author -> authorService.saveAuthor(author))

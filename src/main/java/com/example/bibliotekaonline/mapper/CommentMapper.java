@@ -7,8 +7,6 @@ public class CommentMapper {
     public static CommentDTO toDTO(Comment comment) {
         return new CommentDTO(
                 comment.getId(),
-//                UserMapper.toDTO(comment.getUser()),
-                BookMapper.toDTO(comment.getBook()),
                 comment.getText()
         );
     }
