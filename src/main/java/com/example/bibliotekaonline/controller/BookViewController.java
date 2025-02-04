@@ -56,6 +56,13 @@ public class BookViewController {
         return "redirect:/books/" + id;
     }
 
+    @PostMapping("/{id}/rating")
+    public String addRating(@PathVariable Long id, @RequestParam int rating) {
+        Book book = bookService.getBookById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
+        bookService.postBookReview(book, rating);
+        return "redirect:/books/" + id;
+    }
+
     @GetMapping("/search")
     public String searchBooks(@RequestParam String searchBy,
                               @RequestParam String query,

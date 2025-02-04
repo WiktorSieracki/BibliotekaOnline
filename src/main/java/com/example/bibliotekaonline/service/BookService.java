@@ -66,7 +66,7 @@ public class BookService {
         Double currentAverageRating = book.getAverageRating();
         Double newAverageRating = ((currentAverageRating * currentRatingCount) + rating)/newRatingCount;
         book.setAverageRating(newAverageRating);
-        book.setRatingsCount(currentRatingCount);
+        book.setRatingsCount(newRatingCount);
         }
         return bookRepository.save(book);
     }

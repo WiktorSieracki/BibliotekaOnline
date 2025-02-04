@@ -12,7 +12,23 @@
   <body>
     <div th:replace="~{fragments :: header}"></div>
     <div class="container mt-5">
-      
+      <form th:action="@{/books/{id}/rating(id=${book.id})}" method="post">
+        <div class="form-group">
+          <label for="rating">Add a Review:</label>
+          <input
+            type="number"
+            id="rating"
+            name="rating"
+            class="form-control"
+            min="1"
+            max="5"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">
+          Submit Review
+        </button>
+      </form>
       <div class="card">
         <div class="card-header">
           <h2 th:text="${book.title}">Book Title</h2>
@@ -57,12 +73,23 @@
           </p>
         </div>
         <div class="comments mt-3">
-          <form th:action="@{/books/{id}/comments(id=${book.id})}" th:object="${newComment}" method="post">
+          <form
+            th:action="@{/books/{id}/comments(id=${book.id})}"
+            th:object="${newComment}"
+            method="post"
+          >
             <div class="form-group">
               <label for="commentText">Add a Comment:</label>
-              <textarea id="commentText" th:field="*{text}" class="form-control" rows="3"></textarea>
+              <textarea
+                id="commentText"
+                th:field="*{text}"
+                class="form-control"
+                rows="3"
+              ></textarea>
             </div>
-            <button type="submit" class="btn btn-primary mt-2">Post Comment</button>
+            <button type="submit" class="btn btn-primary mt-2">
+              Post Comment
+            </button>
           </form>
           <h6>Comments:</h6>
           <div th:each="comment : ${book.comments}">
