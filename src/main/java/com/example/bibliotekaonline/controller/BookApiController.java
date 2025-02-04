@@ -66,4 +66,11 @@ public class BookApiController {
         List<CommentDTO> commentDTOList = commentList.stream().map(CommentMapper::toDTO).toList();
         return new ResponseEntity<>(commentDTOList, HttpStatus.OK);
     }
+
+    @PostMapping("/{id}/rating/{rating}")
+    public ResponseEntity<Void> addReview(@PathVariable Long id,@PathVariable Integer rating) {
+        Book book = bookService.getBookById(id).get();
+        bookService.postBookReview(book,rating);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }

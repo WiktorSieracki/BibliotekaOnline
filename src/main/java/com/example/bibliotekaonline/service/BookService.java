@@ -71,4 +71,16 @@ public class BookService {
         return bookRepository.findTop3ByOrderByAverageRatingDesc().stream().limit(4).toList();
     }
 
+    public Book postBookReview(Book book, Integer rating) {
+        if (rating>0 && rating<6) {
+        Integer currentRatingCount = book.getRatingsCount();
+        Integer newRatingCount = currentRatingCount + rating;
+        Double currentAverageRating = book.getAverageRating();
+        Double newAverageRating = ((currentAverageRating * currentRatingCount) + rating)/newRatingCount;
+        book.setAverageRating(newAverageRating);
+        book.setRatingsCount(currentRatingCount);
+        }
+        return bookRepository.save(book);
+    }
+
 }
