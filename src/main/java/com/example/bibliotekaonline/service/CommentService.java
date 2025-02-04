@@ -27,9 +27,9 @@ public class CommentService {
         Book book = bookService.getBookById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
         Comment comment = CommentMapper.toEntity(commentDTO);
         comment.setBook(book);
-        book.getComments().add(comment);
+//        book.getComments().add(comment);
         commentRepository.save(comment);
-        bookService.saveBook(book);
+//        bookService.saveBook(book);
         return comment;
     }
 

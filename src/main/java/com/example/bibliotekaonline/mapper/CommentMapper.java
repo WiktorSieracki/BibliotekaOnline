@@ -13,7 +13,6 @@ public class CommentMapper {
 
     public static Comment toEntity(CommentDTO dto) {
         Comment comment = new Comment();
-        comment.setId(dto.getId());
         comment.setText(dto.getText());
         return comment;
     }

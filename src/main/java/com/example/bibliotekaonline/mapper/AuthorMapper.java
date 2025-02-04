@@ -13,7 +13,7 @@ public class AuthorMapper {
 
     public static Author toEntity(AuthorDTO authorDTO) {
         Author author = new Author();
-        author.setId(authorDTO.getId());
+//        author.setId(authorDTO.getId());
         author.setName(authorDTO.getName());
         return author;
     }

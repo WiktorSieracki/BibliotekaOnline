@@ -27,7 +27,7 @@ public class BookMapper {
 
     public static Book toEntity(BookDTO dto) {
         Book book = new Book();
-        book.setId(dto.getId());
+//        book.setId(dto.getId());
         book.setTitle(dto.getTitle());
         book.setCategories(dto.getCategories());
         book.setPublishedYear(dto.getPublishedYear() != null ? dto.getPublishedYear() : Year.now());
