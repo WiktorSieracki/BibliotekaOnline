@@ -46,11 +46,11 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    public Page<Book> searchBooks(String searchBy, String query,String sortBy, String sortDirection, Pageable pageable) {
+    public Page<Book> searchBooks(String searchBy, String query, Pageable pageable) {
         return switch (searchBy) {
-            case "title" -> bookRepository.findByTitleContainingIgnoreCase(query, sortBy, sortDirection, pageable);
-            case "author" -> bookRepository.findByAuthors_NameContainingIgnoreCase(query, sortBy, sortDirection, pageable);
-            case "category" -> bookRepository.findByCategoriesContainingIgnoreCase(query, sortBy, sortDirection, pageable);
+            case "title" -> bookRepository.findByTitleContainingIgnoreCase(query, pageable);
+            case "author" -> bookRepository.findByAuthors_NameContainingIgnoreCase(query, pageable);
+            case "category" -> bookRepository.findByCategoriesContainingIgnoreCase(query, pageable);
             case null, default -> getAllBooks(pageable);
         };
     }

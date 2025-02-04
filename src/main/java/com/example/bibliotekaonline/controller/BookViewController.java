@@ -7,6 +7,8 @@ import com.example.bibliotekaonline.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -26,8 +28,12 @@ public class BookViewController {
     @GetMapping
     public String getBooks(Model model,
                            @RequestParam(defaultValue = "0") int page,
-                           @RequestParam(defaultValue = "24") int size) {
-        Page<Book> bookPage = bookService.getAllBooks(PageRequest.of(page, size));
+                           @RequestParam(defaultValue = "24") int size,
+                           @RequestParam(defaultValue = "title") String sortBy,
+                           @RequestParam(defaultValue = "ASC") String sortDirection) {
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<Book> bookPage = bookService.getAllBooks(pageable);
         List<Book> mostPopularBooks = bookService.getMostPopularBooks();
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("currentPage", page);
@@ -55,8 +61,12 @@ public class BookViewController {
                               @RequestParam String query,
                               @RequestParam(defaultValue = "0") int page,
                               @RequestParam(defaultValue = "24") int size,
+                              @RequestParam(defaultValue = "title") String sortBy,
+                              @RequestParam(defaultValue = "ASC") String sortDirection,
                               Model model) {
-        Page<Book> bookPage = bookService.searchBooks(searchBy, query, PageRequest.of(page, size));
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<Book> bookPage = bookService.getAllBooks(pageable);
         List<Book> mostPopularBooks = bookService.getMostPopularBooks();
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("currentPage", page);

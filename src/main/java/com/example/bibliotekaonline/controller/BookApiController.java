@@ -12,6 +12,8 @@ import com.example.bibliotekaonline.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +34,12 @@ public class BookApiController {
 
     @GetMapping
     public ResponseEntity<Page<BookDTO>> getBooks(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "24") int size) {
-        Page<Book> bookPage = bookService.getAllBooks(PageRequest.of(page, size));
+                                                  @RequestParam(defaultValue = "24") int size,
+                                                  @RequestParam(defaultValue = "title") String sortBy,
+                                                  @RequestParam(defaultValue = "ASC") String sortDirection) {
+        Sort.Direction direction = Sort.Direction.fromString(sortDirection);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
+        Page<Book> bookPage = bookService.getAllBooks(pageable);
         Page<BookDTO> bookDTOPage = bookPage.map(BookMapper::toDTO);
         return new ResponseEntity<>(bookDTOPage, HttpStatus.OK);
     }
