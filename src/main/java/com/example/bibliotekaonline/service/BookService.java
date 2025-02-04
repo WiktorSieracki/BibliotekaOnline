@@ -46,25 +46,13 @@ public class BookService {
         return bookRepository.save(book);
     }
 
-    public Page<Book> searchBooks(String searchBy, String query, Pageable pageable) {
+    public Page<Book> searchBooks(String searchBy, String query,String sortBy, String sortDirection, Pageable pageable) {
         return switch (searchBy) {
-            case "title" -> searchBooksByTitle(query, pageable);
-            case "author" -> searchBooksByAuthor(query, pageable);
-            case "category" -> searchBooksByCategory(query, pageable);
+            case "title" -> bookRepository.findByTitleContainingIgnoreCase(query, sortBy, sortDirection, pageable);
+            case "author" -> bookRepository.findByAuthors_NameContainingIgnoreCase(query, sortBy, sortDirection, pageable);
+            case "category" -> bookRepository.findByCategoriesContainingIgnoreCase(query, sortBy, sortDirection, pageable);
             case null, default -> getAllBooks(pageable);
         };
-    }
-
-    public Page<Book> searchBooksByTitle(String title, Pageable pageable) {
-        return bookRepository.findByTitleContainingIgnoreCase(title, pageable);
-    }
-
-    public Page<Book> searchBooksByAuthor(String authorName, Pageable pageable) {
-        return bookRepository.findByAuthors_NameContainingIgnoreCase(authorName, pageable);
-    }
-
-    public Page<Book> searchBooksByCategory(String category, Pageable pageable) {
-        return bookRepository.findByCategoriesContainingIgnoreCase(category, pageable);
     }
 
     public List<Book> getMostPopularBooks() {
@@ -74,7 +62,7 @@ public class BookService {
     public Book postBookReview(Book book, Integer rating) {
         if (rating>0 && rating<6) {
         Integer currentRatingCount = book.getRatingsCount();
-        Integer newRatingCount = currentRatingCount + rating;
+        Integer newRatingCount = currentRatingCount + 1;
         Double currentAverageRating = book.getAverageRating();
         Double newAverageRating = ((currentAverageRating * currentRatingCount) + rating)/newRatingCount;
         book.setAverageRating(newAverageRating);
