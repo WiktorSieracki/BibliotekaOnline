@@ -76,6 +76,17 @@
               placeholder="Search..."
               th:value="${query}"
             />
+            <div class="input-group-append">
+            <select name="sortBy" class="form-select">
+              <option value="title" th:selected="${sortBy == 'title'}">Title</option>
+              <option value="averageRating" th:selected="${sortBy == 'averageRating'}">Rating</option>
+              <option value="numPages" th:selected="${sortBy == 'numPages'}">Number of Pages</option>
+            </select>
+            <select name="sortDirection" class="form-select">
+              <option value="ASC" th:selected="${sortDirection == 'ASC'}">Ascending</option>
+              <option value="DESC" th:selected="${sortDirection == 'DESC'}">Descending</option>
+            </select>
+            </div>
             <button class="btn btn-primary" type="submit">Search</button>
           </div>
         </form>
