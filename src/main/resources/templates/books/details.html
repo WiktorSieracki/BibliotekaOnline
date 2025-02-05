@@ -71,6 +71,11 @@
             <strong>Number of Pages:</strong>
             <span th:text="${book.numPages}">Number of Pages</span>
           </p>
+          <a
+                  th:href="@{/users/{userId}/reserve/{id}(userId=${user.getId()}, id=${book.getId()})}"
+                  class="btn btn-success"
+          >Reserve</a
+          >
         </div>
         <div class="comments mt-3">
           <form

@@ -37,9 +37,9 @@ public class Book {
 
     private Year publishedYear;
 
-    private Integer ratingsCount;
+    private Integer ratingsCount = 0;
 
-    private Double averageRating;
+    private Double averageRating = 0.0;
 
     private Integer numPages;
 

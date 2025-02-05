@@ -73,6 +73,7 @@ public class BookApiController {
         }
     }
 
+
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
         Optional<Book> existingBook = bookService.getBookById(id);

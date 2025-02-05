@@ -30,18 +30,18 @@ public class BookMapper {
 //        book.setId(dto.getId());
         book.setTitle(dto.getTitle());
         book.setCategories(dto.getCategories());
-        book.setPublishedYear(dto.getPublishedYear() != null ? dto.getPublishedYear() : Year.now());
+        book.setPublishedYear(dto.getPublishedYear());
         book.setNumPages(dto.getNumPages());
         book.setDescription(dto.getDescription());
         book.setThumbnail(dto.getThumbnail());
-        book.setRatingsCount(dto.getRatingsCount() != null ? dto.getRatingsCount() : 0);
-        book.setAverageRating(dto.getAverageRating() != null ? dto.getAverageRating() : 0.0);
+        book.setRatingsCount(dto.getRatingsCount());
+        book.setAverageRating(dto.getAverageRating());
         book.setAuthors(dto.getAuthors().stream().map(AuthorMapper::toEntity).collect(Collectors.toList()));
-        book.setComments(dto.getComments() != null ? dto.getComments().stream().map(commentDTO -> {
+        book.setComments(dto.getComments().stream().map(commentDTO -> {
             Comment comment = CommentMapper.toEntity(commentDTO);
             comment.setBook(book);
             return comment;
-        }).collect(Collectors.toList()) : Collections.emptyList());
+        }).collect(Collectors.toList()));
         return book;
     }
 }

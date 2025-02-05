@@ -2,13 +2,17 @@ package com.example.bibliotekaonline.controller;
 
 import com.example.bibliotekaonline.dto.CommentDTO;
 import com.example.bibliotekaonline.model.Book;
+import com.example.bibliotekaonline.model.User;
 import com.example.bibliotekaonline.service.BookService;
 import com.example.bibliotekaonline.service.CommentService;
+import com.example.bibliotekaonline.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +28,9 @@ public class BookViewController {
 
     @Autowired
     private CommentService commentService;
+
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
 
     @GetMapping
     public String getBooks(Model model,
@@ -45,6 +52,10 @@ public class BookViewController {
     @GetMapping("/{id}")
     public String getBookDetails(@PathVariable Long id, Model model) {
         Book book = bookService.getBookById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = customUserDetailsService.getUserByEmail(email);
+        model.addAttribute("user", user);
         model.addAttribute("book", book);
         model.addAttribute("newComment", new CommentDTO());
         return "books/details";
@@ -80,6 +91,18 @@ public class BookViewController {
     public String updateBook(@PathVariable Long id, @ModelAttribute Book book) {
         bookService.saveBook(book);
         return "redirect:/books/" + id;
+    }
+
+    @GetMapping("/create")
+    public String showCreateForm(Model model) {
+        model.addAttribute("book", new Book());
+        return "books/create";
+    }
+
+    @PostMapping("/create")
+    public String createBook(@ModelAttribute Book book) {
+        bookService.saveBook(book);
+        return "redirect:/books";
     }
 
     @GetMapping("/search")
