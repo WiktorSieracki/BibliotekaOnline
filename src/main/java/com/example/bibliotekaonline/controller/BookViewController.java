@@ -65,15 +65,15 @@ public class BookViewController {
 
     @GetMapping("/delete/{id}")
     public String deleteBook(@PathVariable Long id) {
-        Book book = bookService.getBookById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
-        return "books/edit";
+        bookService.deleteBook(id);
+        return "redirect:/books";
     }
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         Book book = bookService.getBookById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
         model.addAttribute("book", book);
-        return "books/edit/" + id;
+        return "books/edit";
     }
 
     @PostMapping("/edit/{id}")

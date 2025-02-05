@@ -12,21 +12,21 @@
     <div th:replace="~{fragments :: header}"></div>
     <div class="container mt-5">
       <h2>Edit Book</h2>
-<!--      <form-->
-<!--        th:action="@{/books/edit/{id}(id=${book.id})}"-->
-<!--        th:object="${book}"-->
-<!--        method="post"-->
-<!--      >-->
-<!--        <div class="form-group">-->
-<!--          <label for="title">Title:</label>-->
-<!--          <input-->
-<!--            type="text"-->
-<!--            id="title"-->
-<!--            th:field="*{title}"-->
-<!--            class="form-control"-->
-<!--            required-->
-<!--          />-->
-<!--        </div>-->
+      <form
+        th:action="@{/books/edit/{id}(id=${book.id})}"
+        th:object="${book}"
+        method="post"
+      >
+        <div class="form-group">
+          <label for="title">Title:</label>
+          <input
+            type="text"
+            id="title"
+            th:field="*{title}"
+            class="form-control"
+            required
+          />
+        </div>
 <!--        <div class="form-group">-->
 <!--          <label for="authors">Authors:</label>-->
 <!--          <input-->
@@ -37,48 +37,48 @@
 <!--            required-->
 <!--          />-->
 <!--        </div>-->
-<!--        <div class="form-group">-->
-<!--          <label for="categories">Categories:</label>-->
-<!--          <input-->
-<!--            type="text"-->
-<!--            id="categories"-->
-<!--            th:field="*{categories}"-->
-<!--            class="form-control"-->
-<!--            required-->
-<!--          />-->
-<!--        </div>-->
-<!--        <div class="form-group">-->
-<!--          <label for="description">Description:</label>-->
-<!--          <textarea-->
-<!--            id="description"-->
-<!--            th:field="*{description}"-->
-<!--            class="form-control"-->
-<!--            rows="3"-->
-<!--            required-->
-<!--          ></textarea>-->
-<!--        </div>-->
-<!--        <div class="form-group">-->
-<!--          <label for="publishedYear">Published Year:</label>-->
-<!--          <input-->
-<!--            type="number"-->
-<!--            id="publishedYear"-->
-<!--            th:field="*{publishedYear}"-->
-<!--            class="form-control"-->
-<!--            required-->
-<!--          />-->
-<!--        </div>-->
-<!--        <div class="form-group">-->
-<!--          <label for="numPages">Number of Pages:</label>-->
-<!--          <input-->
-<!--            type="number"-->
-<!--            id="numPages"-->
-<!--            th:field="*{numPages}"-->
-<!--            class="form-control"-->
-<!--            required-->
-<!--          />-->
-<!--        </div>-->
-<!--        <button type="submit" class="btn btn-primary mt-2">Save</button>-->
-<!--      </form>-->
+        <div class="form-group">
+          <label for="categories">Categories:</label>
+          <input
+            type="text"
+            id="categories"
+            th:field="*{categories}"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="description">Description:</label>
+          <textarea
+            id="description"
+            th:field="*{description}"
+            class="form-control"
+            rows="3"
+            required
+          ></textarea>
+        </div>
+        <div class="form-group">
+          <label for="publishedYear">Published Year:</label>
+          <input
+            type="number"
+            id="publishedYear"
+            th:field="*{publishedYear}"
+            class="form-control"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="numPages">Number of Pages:</label>
+          <input
+            type="number"
+            id="numPages"
+            th:field="*{numPages}"
+            class="form-control"
+            required
+          />
+        </div>
+        <button type="submit" class="btn btn-primary mt-2">Save</button>
+      </form>
     </div>
     <div th:replace="~{fragments :: footer}"></div>
   </body>
