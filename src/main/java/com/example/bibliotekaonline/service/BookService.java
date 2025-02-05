@@ -59,6 +59,10 @@ public class BookService {
         return bookRepository.findTop3ByOrderByAverageRatingDesc().stream().limit(4).toList();
     }
 
+    public void deleteBook(Long id) {
+        bookRepository.deleteById(id);
+    }
+
     public Book postBookReview(Book book, Integer rating) {
         if (rating>0 && rating<6) {
         Integer currentRatingCount = book.getRatingsCount();

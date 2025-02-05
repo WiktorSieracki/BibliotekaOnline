@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.w3.org/1999/xhtml"
+>
   <head>
     <title>Lista Książek</title>
     <link
@@ -77,15 +80,28 @@
               th:value="${query}"
             />
             <div class="input-group-append">
-            <select name="sortBy" class="form-select">
-              <option value="title" th:selected="${sortBy == 'title'}">Title</option>
-              <option value="averageRating" th:selected="${sortBy == 'averageRating'}">Rating</option>
-              <option value="numPages" th:selected="${sortBy == 'numPages'}">Number of Pages</option>
-            </select>
-            <select name="sortDirection" class="form-select">
-              <option value="ASC" th:selected="${sortDirection == 'ASC'}">Ascending</option>
-              <option value="DESC" th:selected="${sortDirection == 'DESC'}">Descending</option>
-            </select>
+              <select name="sortBy" class="form-select">
+                <option value="title" th:selected="${sortBy == 'title'}">
+                  Title
+                </option>
+                <option
+                  value="averageRating"
+                  th:selected="${sortBy == 'averageRating'}"
+                >
+                  Rating
+                </option>
+                <option value="numPages" th:selected="${sortBy == 'numPages'}">
+                  Number of Pages
+                </option>
+              </select>
+              <select name="sortDirection" class="form-select">
+                <option value="ASC" th:selected="${sortDirection == 'ASC'}">
+                  Ascending
+                </option>
+                <option value="DESC" th:selected="${sortDirection == 'DESC'}">
+                  Descending
+                </option>
+              </select>
             </div>
             <button class="btn btn-primary" type="submit">Search</button>
           </div>
@@ -112,6 +128,18 @@
                   class="btn btn-primary"
                   >View Details</a
                 >
+                <div sec:authorize="hasRole('ROLE_ADMIN')">
+                  <a
+                    th:href="@{/books/edit/{id}(id=${book.id})}"
+                    class="btn btn-warning"
+                    >Edit</a
+                  >
+                  <a
+                    th:href="@{/books/delete/{id}(id=${book.id})}"
+                    class="btn btn-danger"
+                    >Delete</a
+                  >
+                </div>
               </div>
             </div>
           </div>
@@ -119,7 +147,8 @@
 
         <nav th:replace="~{fragments :: page-navigation}"></nav>
 
-      <div class="footer" th:replace="~{fragments :: footer}"></div>
+        <div class="footer" th:replace="~{fragments :: footer}"></div>
+      </div>
     </div>
   </body>
 </html>

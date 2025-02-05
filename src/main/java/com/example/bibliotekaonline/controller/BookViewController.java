@@ -63,6 +63,25 @@ public class BookViewController {
         return "redirect:/books/" + id;
     }
 
+    @GetMapping("/delete/{id}")
+    public String deleteBook(@PathVariable Long id) {
+        Book book = bookService.getBookById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
+        return "books/edit";
+    }
+
+    @GetMapping("/edit/{id}")
+    public String showEditForm(@PathVariable Long id, Model model) {
+        Book book = bookService.getBookById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));
+        model.addAttribute("book", book);
+        return "books/edit/" + id;
+    }
+
+    @PostMapping("/edit/{id}")
+    public String updateBook(@PathVariable Long id, @ModelAttribute Book book) {
+        bookService.saveBook(book);
+        return "redirect:/books/" + id;
+    }
+
     @GetMapping("/search")
     public String searchBooks(@RequestParam String searchBy,
                               @RequestParam String query,

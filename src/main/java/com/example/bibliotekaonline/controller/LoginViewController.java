@@ -8,7 +8,7 @@ public class LoginViewController {
 
    @GetMapping("/login")
    public String login() {
-       return "login";
+       return "loginView";
    }
 
    @GetMapping("/success")
@@ -23,6 +23,6 @@ public class LoginViewController {
 
    @GetMapping("/logout-success")
    public String logoutSuccessView() {
-       return "redirect:/login";
+       return "redirect:/books";
    }
 }

@@ -59,6 +59,31 @@ public class BookApiController {
         return new ResponseEntity<>(savedBookDTO, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody BookDTO bookDTO) {
+        Optional<Book> existingBook = bookService.getBookById(id);
+        if (existingBook.isPresent()) {
+            Book book = BookMapper.toEntity(bookDTO);
+            book.setId(id);
+            Book updatedBook = bookService.saveBook(book);
+            BookDTO updatedBookDTO = BookMapper.toDTO(updatedBook);
+            return new ResponseEntity<>(updatedBookDTO, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
+        Optional<Book> existingBook = bookService.getBookById(id);
+        if (existingBook.isPresent()) {
+            bookService.deleteBook(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
     @PostMapping("/{id}/comments")
     public ResponseEntity<CommentDTO> addComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
         Comment newComment = commentService.saveComment(id,commentDTO);
