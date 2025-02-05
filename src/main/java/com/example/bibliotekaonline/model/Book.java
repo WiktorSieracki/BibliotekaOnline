@@ -45,5 +45,4 @@ public class Book {
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL,orphanRemoval = true)
     private List<Comment> comments;
-
 }

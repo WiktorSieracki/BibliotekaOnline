@@ -1,8 +1,10 @@
 package com.example.bibliotekaonline.service;
 
+import com.example.bibliotekaonline.model.Book;
 import com.example.bibliotekaonline.model.User;
 import com.example.bibliotekaonline.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,6 +15,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -24,6 +27,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private BookService bookService;
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
@@ -40,6 +45,46 @@ public class CustomUserDetailsService implements UserDetailsService {
                         .collect(Collectors.toList()));
     }
 
+    public Book addBookToReserved(long bookId, long userId) {
+        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        
+        user.getReservedBooks().add(book);
+        userRepository.save(user);
+        
+        return book;
+    }
+
+    @Transactional
+    public void borrowBookFromReserved(long bookId, long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
+
+        if (user.getReservedBooks().contains(book)) {
+            user.getReservedBooks().remove(book);
+            user.getBorrowedBooks().add(book);
+            if (!user.getBorrowHistory().contains(book)) {
+                user.getBorrowHistory().add(book);
+            }
+            userRepository.save(user);
+        } else {
+            throw new IllegalStateException("Book is not in the reserved list");
+        }
+    }
+
+    @Transactional
+    public void returnBook(long bookId, long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
+
+        if (user.getBorrowedBooks().contains(book)) {
+            user.getBorrowedBooks().remove(book);
+            userRepository.save(user);
+        } else {
+            throw new IllegalStateException("Book is not in the borrowed list");
+        }
+    }
+
     @PostConstruct
     public void createAdminUser() {
         if (!userRepository.existsByEmail("admin@example.com")) {
@@ -47,6 +92,9 @@ public class CustomUserDetailsService implements UserDetailsService {
             admin.setEmail("admin@example.com");
             admin.setName("admin");
             admin.setPassword("password");
+            admin.setBorrowedBooks(new ArrayList<>());
+            admin.setReservedBooks(new ArrayList<>());
+            admin.setBorrowHistory(new ArrayList<>());
             admin.setRoles(List.of("ROLE_ADMIN"));
             saveUser(admin);
         }

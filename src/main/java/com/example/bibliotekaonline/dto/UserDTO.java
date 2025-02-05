@@ -13,5 +13,8 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
-    private List<String> roles = new ArrayList<>();
+    private List<BookDTO> reservedBooks;
+    private List<BookDTO> borrowedBooks;
+    private List<BookDTO> borrowHistory;
+    private List<String> roles;
 }

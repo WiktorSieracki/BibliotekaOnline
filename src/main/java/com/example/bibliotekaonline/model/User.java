@@ -27,15 +27,15 @@ public class User {
     @Column(name = "role")
     private List<String> roles = new ArrayList<>();
 
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Book> borrowedBooks = new ArrayList<Book>();
-//
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Book> reservedBooks = new ArrayList<Book>();
-//
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
-//    private List<Book> borrowHistory = new ArrayList<Book>();
-//
-//    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Comment> comments;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Book> borrowedBooks = new ArrayList<Book>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Book> reservedBooks = new ArrayList<Book>();
+
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Book> borrowHistory = new ArrayList<Book>();
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments;
 }
