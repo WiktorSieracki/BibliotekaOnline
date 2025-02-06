@@ -19,8 +19,13 @@
             <div class="list-group-item" th:text="${book.title}"></div>
             <a
               th:href="@{/users/{userId}/borrow/{id}(userId=${user.getId()}, id=${book.getId()})}"
-              class="btn btn-danger"
+              class="btn btn-success"
               >Borrow</a
+            >
+            <a
+              th:href="@{/users/{userId}/removeReserve/{id}(userId=${user.getId()}, id=${book.getId()})}"
+              class="btn btn-danger"
+              >Remove Book</a
             >
           </div>
         </div>

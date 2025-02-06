@@ -99,6 +99,12 @@ public class BookApiController {
         return new ResponseEntity<>(commentDTOList, HttpStatus.OK);
     }
 
+    @DeleteMapping("/{id}/comments/{commentId}/delete")
+    public ResponseEntity<Void> deleteComment(@PathVariable Long commentId, @PathVariable Long id) {
+        commentService.deleteComment(commentId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
     @PostMapping("/{id}/rating/{rating}")
     public ResponseEntity<Void> addReview(@PathVariable Long id,@PathVariable Integer rating) {
         Book book = bookService.getBookById(id).get();

@@ -70,6 +70,12 @@ public class BookViewController {
         return "redirect:/books/" + bookId;
     }
 
+    @GetMapping("/{bookId}/comments/{commentId}/delete")
+    public String deleteComment(@PathVariable Long bookId,@PathVariable Long commentId) {
+        commentService.deleteComment(commentId);
+        return "redirect:/books/" + bookId;
+    }
+
     @PostMapping("/{id}/rating")
     public String addRating(@PathVariable Long id, @RequestParam int rating) {
         Book book = bookService.getBookById(id).orElseThrow(() -> new IllegalArgumentException("Invalid book Id:" + id));

@@ -36,6 +36,11 @@ public class CommentService {
         return comment;
     }
 
+    @Transactional
+    public void deleteComment(long commentId) {
+       commentRepository.deleteById(commentId);
+    }
+
     public List<Comment> getComments(long bookId) {
         Book book = bookService.getBookById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
         return book.getComments();

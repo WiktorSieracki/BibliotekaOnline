@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
   <head>
     <title>Book Details</title>
     <link
@@ -99,6 +99,13 @@
           <h6>Comments:</h6>
           <div th:each="comment : ${book.comments}">
             <p th:text="${comment.text}"></p>
+            <div sec:authorize="hasRole('ROLE_ADMIN')">
+              <a
+                      th:href="@{/books/{id}/comments/{commentId}/delete(id=${book.id},commentId=${comment.id})}"
+                      class="btn btn-danger"
+              >Delete</a
+              >
+            </div>
             <p th:text="${comment.user.getName()}"></p>
           </div>
         </div>

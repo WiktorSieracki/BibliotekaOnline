@@ -54,6 +54,12 @@ public class LoginViewController {
         return "redirect:/profile";
     }
 
+    @GetMapping("users/{userId}/removeReserve/{bookId}")
+    public String getRemoveReserveBook(@PathVariable long userId, @PathVariable long bookId, Model model) {
+        customUserDetailsService.removeBookFromReserved(bookId, userId);
+        return "redirect:/profile";
+    }
+
     @GetMapping("/users/{userId}/reserve/{bookId}")
     public String getReserveBook(@PathVariable long userId, @PathVariable long bookId, Model model) {
         customUserDetailsService.addBookToReserved(bookId, userId);

@@ -63,6 +63,13 @@ public class CustomUserDetailsService implements UserDetailsService {
         return book;
     }
 
+    public void removeBookFromReserved(long bookId, long userId) {
+        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
+        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+
+        user.getReservedBooks().remove(book);
+        userRepository.save(user);
+    }
     @Transactional
     public void borrowBookFromReserved(long bookId, long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
@@ -110,7 +117,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public User saveUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+        if (!userRepository.existsByEmail(user.getEmail())) {
+            user.setPassword(passwordEncoder.encode(user.getPassword()));
+            return userRepository.save(user);
+        }
+        return user;
     }
 }

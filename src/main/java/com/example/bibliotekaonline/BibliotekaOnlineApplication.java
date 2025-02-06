@@ -25,10 +25,11 @@ public class BibliotekaOnlineApplication implements CommandLineRunner {
         User user = context.getBean("user", User.class);
         CustomUserDetailsService customUserDetailsService = context.getBean(CustomUserDetailsService.class);
         customUserDetailsService.saveUser(user);
+
     }
 
     @Override
     public void run(String... args) throws Exception {
-        // csvService.loadCSVData();
+//        csvService.loadCSVData();
     }
 }
