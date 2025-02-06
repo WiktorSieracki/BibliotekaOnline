@@ -4,14 +4,34 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-<!--    <bean id="user1" class="com.example.bibliotekaonline.model.User">-->
-<!--        <property name="name" value="John Doe"/>-->
-<!--        <property name="email" value="john.doe@example.com"/>-->
-<!--        <property name="password" value="password123"/>-->
-<!--    </bean>-->
+    <bean id="user" class="com.example.bibliotekaonline.model.User">
+        <property name="name" value="Wiktor Sieracki"/>
+        <property name="email" value="wiktor@gmail.com"/>
+        <property name="password" value="admin"/>
+        <property name="roles">
+            <list>
 
-<!--    <bean id="1" class="com.example.bibliotekaonline.model.Book">-->
-<!--        <property name="title" value="Gilead"/>-->
-<!--        <property name="title" value="Gilead"/>-->
+            </list>
+        </property>
+        <property name="borrowedBooks">
+            <list>
+
+            </list>
+        </property>
+        <property name="reservedBooks">
+            <list>
+            </list>
+        </property>
+        <property name="borrowHistory">
+            <list>
+
+            </list>
+        </property>
+        <property name="comments">
+            <list>
+            </list>
+        </property>
+    </bean>
+
 
 </beans>

@@ -61,10 +61,13 @@ public class BookViewController {
         return "books/details";
     }
 
-    @PostMapping("/{id}/comments")
-    public String addComment(@PathVariable Long id, @ModelAttribute("newComment") CommentDTO commentDTO) {
-        commentService.saveComment(id, commentDTO);
-        return "redirect:/books/" + id;
+    @PostMapping("/{bookId}/comments")
+    public String addComment(@PathVariable Long bookId, @ModelAttribute("newComment") CommentDTO commentDTO) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = customUserDetailsService.getUserByEmail(email);
+        commentService.saveComment(bookId, user.getId(), commentDTO);
+        return "redirect:/books/" + bookId;
     }
 
     @PostMapping("/{id}/rating")
@@ -115,7 +118,7 @@ public class BookViewController {
                               Model model) {
         Sort.Direction direction = Sort.Direction.fromString(sortDirection);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
-        Page<Book> bookPage = bookService.getAllBooks(pageable);
+        Page<Book> bookPage = bookService.searchBooks(searchBy,query,pageable);
         List<Book> mostPopularBooks = bookService.getMostPopularBooks();
         model.addAttribute("books", bookPage.getContent());
         model.addAttribute("currentPage", page);

@@ -99,6 +99,7 @@
           <h6>Comments:</h6>
           <div th:each="comment : ${book.comments}">
             <p th:text="${comment.text}"></p>
+            <p th:text="${comment.user.getName()}"></p>
           </div>
         </div>
       </div>

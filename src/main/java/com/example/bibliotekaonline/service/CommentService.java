@@ -22,10 +22,15 @@ public class CommentService {
     @Autowired
     private CommentRepository commentRepository;
 
+    @Autowired
+    private CustomUserDetailsService customUserDetailsService;
+
    @Transactional
-    public Comment saveComment(long bookId, CommentDTO commentDTO) {
+    public Comment saveComment(long bookId,long userId, CommentDTO commentDTO) {
         Book book = bookService.getBookById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+        User user = customUserDetailsService.getUserById(userId);
         Comment comment = CommentMapper.toEntity(commentDTO);
+        comment.setUser(user);
         comment.setBook(book);
         commentRepository.save(comment);
         return comment;

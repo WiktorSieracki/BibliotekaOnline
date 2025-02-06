@@ -19,6 +19,6 @@ public interface BookRepository extends JpaRepository<Book, Long> {
 
     Page<Book> findByCategoriesContainingIgnoreCase(String category, Pageable pageable);
 
-    @Query("SELECT b FROM Book b WHERE b.ratingsCount>10 ORDER BY b.averageRating DESC")
+    @Query("SELECT b FROM Book b WHERE b.ratingsCount>0 ORDER BY b.averageRating DESC")
     List<Book> findTop3ByOrderByAverageRatingDesc();
 }

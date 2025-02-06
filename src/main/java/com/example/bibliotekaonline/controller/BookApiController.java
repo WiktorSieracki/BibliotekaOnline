@@ -85,9 +85,9 @@ public class BookApiController {
         }
     }
 
-    @PostMapping("/{id}/comments")
-    public ResponseEntity<CommentDTO> addComment(@PathVariable Long id, @RequestBody CommentDTO commentDTO) {
-        Comment newComment = commentService.saveComment(id,commentDTO);
+    @PostMapping("/{bookId}/comments/{userId}")
+    public ResponseEntity<CommentDTO> addComment(@PathVariable Long bookId,@PathVariable Long userId, @RequestBody CommentDTO commentDTO) {
+        Comment newComment = commentService.saveComment(bookId,userId,commentDTO);
         CommentDTO newCommentDTO = CommentMapper.toDTO(newComment);
         return new ResponseEntity<>(newCommentDTO,HttpStatus.CREATED);
     }

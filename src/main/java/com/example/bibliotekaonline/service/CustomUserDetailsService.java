@@ -49,6 +49,10 @@ public class CustomUserDetailsService implements UserDetailsService {
         return userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
     }
 
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + id));
+    }
+
     public Book addBookToReserved(long bookId, long userId) {
         Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
         User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));

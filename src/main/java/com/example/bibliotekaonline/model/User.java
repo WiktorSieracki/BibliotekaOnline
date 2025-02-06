@@ -37,5 +37,5 @@ public class User {
     private List<Book> borrowHistory = new ArrayList<Book>();
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Comment> comments;
+    private List<Comment> comments = new ArrayList<>();
 }

@@ -1,6 +1,9 @@
 package com.example.bibliotekaonline.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.time.Year;
@@ -13,8 +16,9 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    // @Column(unique = true)
+
+    @NotNull
+    @Size(min = 1, max = 255)
     private String title;
 
     @ManyToMany(cascade = CascadeType.MERGE)
@@ -35,12 +39,15 @@ public class Book {
     @Column(columnDefinition="TEXT")
     private String description;
 
+    @NotNull
     private Year publishedYear;
 
     private Integer ratingsCount = 0;
 
     private Double averageRating = 0.0;
 
+    @NotNull
+    @Min(1)
     private Integer numPages;
 
     @OneToMany(mappedBy = "book", cascade = CascadeType.ALL,orphanRemoval = true)
