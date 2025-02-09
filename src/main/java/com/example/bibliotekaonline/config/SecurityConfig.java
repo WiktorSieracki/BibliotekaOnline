@@ -20,6 +20,7 @@ public class SecurityConfig {
                         authorizeRequests
                                .requestMatchers("/books/**").permitAll() // Ensure all paths under /books/ are permitted
                                 .requestMatchers("/api/**").permitAll() // Ensure all paths under /api/ are permitted
+                                .requestMatchers("/register").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .csrf().disable()

@@ -27,6 +27,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Autowired
     private BookService bookService;
 
@@ -100,20 +101,17 @@ public class CustomUserDetailsService implements UserDetailsService {
         }
     }
 
-    @PostConstruct
-    public void createAdminUser() {
-        if (!userRepository.existsByEmail("admin@example.com")) {
-            User admin = new User();
-            admin.setEmail("admin@example.com");
-            admin.setName("admin");
-            admin.setPassword("password");
-            admin.setBorrowedBooks(new ArrayList<>());
-            admin.setReservedBooks(new ArrayList<>());
-            admin.setBorrowHistory(new ArrayList<>());
-            admin.setRoles(List.of("ROLE_ADMIN"));
-            saveUser(admin);
-        }
-    }
+     @PostConstruct
+     public void createAdminUser() {
+         if (!userRepository.existsByEmail("admin@example.com")) {
+             User admin = new User();
+             admin.setEmail("admin@example.com");
+             admin.setName("admin");
+             admin.setPassword("password");
+             admin.setRoles(List.of("ROLE_ADMIN"));
+             saveUser(admin);
+         }
+     }
 
     @Transactional
     public User saveUser(User user) {

@@ -1,17 +1,21 @@
 package com.example.bibliotekaonline.controller;
 
+import com.example.bibliotekaonline.dto.request.UserRequestDTO;
+import com.example.bibliotekaonline.mapper.UserMapper;
 import com.example.bibliotekaonline.model.User;
 import com.example.bibliotekaonline.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+
+import jakarta.validation.Valid;
 
 @Controller
 public class LoginViewController {
@@ -20,8 +24,28 @@ public class LoginViewController {
     private CustomUserDetailsService customUserDetailsService;
 
     @GetMapping("/login")
-    public String login() {
-       return "loginView";
+    public String login(Model model) {
+        return "loginView";
+    }
+
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new User());
+        return "register";
+    }
+
+    @PostMapping("/register")
+    public String registerUser(@ModelAttribute("user") @Valid User user, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            model.addAttribute("user", user);
+            model.addAttribute("errors", result.getAllErrors());
+            return "register";
+        }
+
+        customUserDetailsService.saveUser(user);
+
+        model.addAttribute("registrationSuccess", true);
+        return "redirect:/login?registrationSuccess";
     }
 
     @GetMapping("/success")

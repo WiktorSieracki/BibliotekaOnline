@@ -1,7 +1,11 @@
 package com.example.bibliotekaonline.model;
 
 
+import com.example.bibliotekaonline.validator.UniqueEmail;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -20,10 +24,16 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotEmpty
+    @Size(min = 4, max = 50)
     private String name;
 
+    @NotEmpty
+    @Email
+    @UniqueEmail
     private String email;
 
+    @NotEmpty
     private String password;
 
     @ElementCollection(fetch = FetchType.EAGER)

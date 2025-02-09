@@ -1,6 +1,7 @@
 package com.example.bibliotekaonline;
 
 import com.example.bibliotekaonline.model.User;
+import com.example.bibliotekaonline.repository.UserRepository;
 import com.example.bibliotekaonline.service.CSVService;
 import com.example.bibliotekaonline.service.CustomUserDetailsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class BibliotekaOnlineApplication implements CommandLineRunner {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(BibliotekaOnlineApplication.class, args);
