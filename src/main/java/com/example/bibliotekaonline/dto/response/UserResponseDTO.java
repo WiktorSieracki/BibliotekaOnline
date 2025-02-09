@@ -1,9 +1,9 @@
 package com.example.bibliotekaonline.dto;
 
+import com.example.bibliotekaonline.model.Book;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @AllArgsConstructor
@@ -13,8 +13,8 @@ public class UserDTO {
     private String name;
     private String email;
     private String password;
-    private List<BookDTO> reservedBooks;
-    private List<BookDTO> borrowedBooks;
-    private List<BookDTO> borrowHistory;
+    private List<Book> reservedBooks;
+    private List<Book> borrowedBooks;
+    private List<Book> borrowHistory;
     private List<String> roles;
 }

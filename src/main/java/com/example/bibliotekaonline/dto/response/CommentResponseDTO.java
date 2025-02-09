@@ -1,5 +1,7 @@
 package com.example.bibliotekaonline.dto;
 
+import com.example.bibliotekaonline.model.Book;
+import com.example.bibliotekaonline.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,8 +11,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class CommentDTO {
     private long id;
-//    private UserDTO user;
-//    private BookDTO book;
+    private User user;
+    private Book book;
     private String text;
 
 }
