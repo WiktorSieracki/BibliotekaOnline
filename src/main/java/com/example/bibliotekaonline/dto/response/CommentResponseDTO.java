@@ -1,4 +1,4 @@
-package com.example.bibliotekaonline.dto;
+package com.example.bibliotekaonline.dto.response;
 
 import com.example.bibliotekaonline.model.Book;
 import com.example.bibliotekaonline.model.User;
@@ -6,13 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+import java.time.LocalDateTime;
+
 @AllArgsConstructor
 @Data
-public class CommentDTO {
+public class CommentResponseDTO {
     private long id;
-    private User user;
-    private Book book;
+    private long userId;
+    private long bookId;
+    private LocalDateTime createdAt;
     private String text;
 
 }

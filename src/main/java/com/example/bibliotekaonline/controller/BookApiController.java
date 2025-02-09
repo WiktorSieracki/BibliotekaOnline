@@ -1,14 +1,16 @@
 package com.example.bibliotekaonline.controller;
 
-import com.example.bibliotekaonline.dto.BookDTO;
-import com.example.bibliotekaonline.dto.CommentDTO;
+import com.example.bibliotekaonline.dto.request.BookRequestDTO;
+import com.example.bibliotekaonline.dto.request.CommentRequestDTO;
+import com.example.bibliotekaonline.dto.response.BookResponseDTO;
+import com.example.bibliotekaonline.dto.response.CommentResponseDTO;
 import com.example.bibliotekaonline.mapper.BookMapper;
 import com.example.bibliotekaonline.mapper.CommentMapper;
 import com.example.bibliotekaonline.model.Book;
 import com.example.bibliotekaonline.model.Comment;
-import com.example.bibliotekaonline.service.AuthorService;
 import com.example.bibliotekaonline.service.BookService;
 import com.example.bibliotekaonline.service.CommentService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,69 +35,61 @@ public class BookApiController {
     private CommentService commentService;
 
     @GetMapping
-    public ResponseEntity<Page<BookDTO>> getBooks(@RequestParam(defaultValue = "0") int page,
-                                                  @RequestParam(defaultValue = "24") int size,
-                                                  @RequestParam(defaultValue = "title") String sortBy,
-                                                  @RequestParam(defaultValue = "ASC") String sortDirection) {
+    public ResponseEntity<Page<BookResponseDTO>> getBooks(@RequestParam(defaultValue = "0") int page,
+                                                          @RequestParam(defaultValue = "24") int size,
+                                                          @RequestParam(defaultValue = "title") String sortBy,
+                                                          @RequestParam(defaultValue = "ASC") String sortDirection) {
         Sort.Direction direction = Sort.Direction.fromString(sortDirection);
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, sortBy));
         Page<Book> bookPage = bookService.getAllBooks(pageable);
-        Page<BookDTO> bookDTOPage = bookPage.map(BookMapper::toDTO);
+        Page<BookResponseDTO> bookDTOPage = bookPage.map(BookMapper::toResponseDTO);
         return new ResponseEntity<>(bookDTOPage, HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<BookDTO> getBookById(@PathVariable Long id) {
-        Optional<Book> book = bookService.getBookById(id);
-        BookDTO bookDTO = BookMapper.toDTO(book.get());
+    public ResponseEntity<BookResponseDTO> getBookById(@PathVariable Long id) {
+        Book book = bookService.getBookById(id);
+        BookResponseDTO bookDTO = BookMapper.toResponseDTO(book);
         return new ResponseEntity<>(bookDTO, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<BookDTO> createBook(@RequestBody BookDTO bookDTO) {
-        Book book = BookMapper.toEntity(bookDTO);
+    public ResponseEntity<BookResponseDTO> createBook(@RequestBody BookRequestDTO bookRequestDTO) {
+        Book book = BookMapper.toEntity(bookRequestDTO);
         Book savedBook = bookService.saveBook(book);
-        BookDTO savedBookDTO = BookMapper.toDTO(savedBook);
+        BookResponseDTO savedBookDTO = BookMapper.toResponseDTO(savedBook);
         return new ResponseEntity<>(savedBookDTO, HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<BookDTO> updateBook(@PathVariable Long id, @RequestBody BookDTO bookDTO) {
-        Optional<Book> existingBook = bookService.getBookById(id);
-        if (existingBook.isPresent()) {
-            Book book = BookMapper.toEntity(bookDTO);
-            book.setId(id);
-            Book updatedBook = bookService.saveBook(book);
-            BookDTO updatedBookDTO = BookMapper.toDTO(updatedBook);
-            return new ResponseEntity<>(updatedBookDTO, HttpStatus.OK);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<BookResponseDTO> updateBook(@PathVariable Long id, @RequestBody BookRequestDTO updatedBookRequestDTO) {
+        Book existingBook = bookService.getBookById(id);
+        Book book = BookMapper.toEntity(updatedBookRequestDTO);
+        book.setId(id);
+        Book updatedBook = bookService.saveBook(book);
+        BookResponseDTO updatedBookDTO = BookMapper.toResponseDTO(updatedBook);
+        return new ResponseEntity<>(updatedBookDTO, HttpStatus.OK);
     }
 
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteBook(@PathVariable Long id) {
-        Optional<Book> existingBook = bookService.getBookById(id);
-        if (existingBook.isPresent()) {
-            bookService.deleteBook(id);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        Book existingBook = bookService.getBookById(id);
+        bookService.deleteBook(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PostMapping("/{bookId}/comments/{userId}")
-    public ResponseEntity<CommentDTO> addComment(@PathVariable Long bookId,@PathVariable Long userId, @RequestBody CommentDTO commentDTO) {
+    public ResponseEntity<CommentResponseDTO> addComment(@PathVariable Long bookId, @PathVariable Long userId, @RequestBody CommentRequestDTO commentDTO) {
         Comment newComment = commentService.saveComment(bookId,userId,commentDTO);
-        CommentDTO newCommentDTO = CommentMapper.toDTO(newComment);
+        CommentResponseDTO newCommentDTO = CommentMapper.toResponseDTO(newComment);
         return new ResponseEntity<>(newCommentDTO,HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}/comments")
-    public ResponseEntity<List<CommentDTO>> getComments(@PathVariable Long id) {
+    public ResponseEntity<List<CommentResponseDTO>> getComments(@PathVariable Long id) {
         List<Comment> commentList = commentService.getComments(id);
-        List<CommentDTO> commentDTOList = commentList.stream().map(CommentMapper::toDTO).toList();
+        List<CommentResponseDTO> commentDTOList = commentList.stream().map(CommentMapper::toResponseDTO).toList();
         return new ResponseEntity<>(commentDTOList, HttpStatus.OK);
     }
 
@@ -107,7 +101,7 @@ public class BookApiController {
 
     @PostMapping("/{id}/rating/{rating}")
     public ResponseEntity<Void> addReview(@PathVariable Long id,@PathVariable Integer rating) {
-        Book book = bookService.getBookById(id).get();
+        Book book = bookService.getBookById(id);
         bookService.postBookReview(book,rating);
         return new ResponseEntity<>(HttpStatus.OK);
     }

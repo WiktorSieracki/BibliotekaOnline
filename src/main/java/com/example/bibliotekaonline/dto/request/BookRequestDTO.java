@@ -1,5 +1,6 @@
-package com.example.bibliotekaonline.dto.response;
+package com.example.bibliotekaonline.dto.request;
 
+import com.example.bibliotekaonline.dto.response.AuthorResponseDTO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -8,8 +9,7 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-public class BookResponseDTO {
-    private Long id;
+public class BookRequestDTO {
     private String title;
     private List<String> categories;
     private Year publishedYear;
@@ -18,7 +18,6 @@ public class BookResponseDTO {
     private String thumbnail;
     private Integer ratingsCount;
     private Double averageRating;
-    private List<AuthorResponseDTO> authors;
-    private List<CommentResponseDTO> comments;
+    private List<AuthorRequestDTO> authors;
 
 }

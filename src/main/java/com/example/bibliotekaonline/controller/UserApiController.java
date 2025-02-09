@@ -1,7 +1,8 @@
 package com.example.bibliotekaonline.controller;
 
-import com.example.bibliotekaonline.dto.BookDTO;
-import com.example.bibliotekaonline.dto.UserDTO;
+import com.example.bibliotekaonline.dto.request.UserRequestDTO;
+import com.example.bibliotekaonline.dto.response.BookResponseDTO;
+import com.example.bibliotekaonline.dto.response.UserResponseDTO;
 import com.example.bibliotekaonline.mapper.BookMapper;
 import com.example.bibliotekaonline.mapper.UserMapper;
 import com.example.bibliotekaonline.model.Book;
@@ -23,23 +24,23 @@ public class UserApiController {
     private CustomUserDetailsService customUserDetailsService;
 
     @GetMapping
-    public ResponseEntity<List<UserDTO>> getAllUsers() {
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
         List<User> users = customUserDetailsService.getAllUsers();
-        List<UserDTO> userDTOs = users.stream().map(UserMapper::toDTO).collect(Collectors.toList());
+        List<UserResponseDTO> userDTOs = users.stream().map(UserMapper::toResponseDTO).collect(Collectors.toList());
         return new ResponseEntity<>(userDTOs, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<UserDTO> createUser(@RequestBody UserDTO userDTO) {
+    public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userDTO) {
         User user = UserMapper.toEntity(userDTO);
         User savedUser = customUserDetailsService.saveUser(user);
-        return new ResponseEntity<>(UserMapper.toDTO(savedUser), HttpStatus.CREATED);
+        return new ResponseEntity<>(UserMapper.toResponseDTO(savedUser), HttpStatus.CREATED);
     }
 
     @PostMapping("/{userId}/reserve/{bookId}")
-    public ResponseEntity<BookDTO> reserveBook(@PathVariable long userId, @PathVariable long bookId) {
+    public ResponseEntity<BookResponseDTO> reserveBook(@PathVariable long userId, @PathVariable long bookId) {
         Book reservedBook = customUserDetailsService.addBookToReserved(bookId, userId);
-        BookDTO reservedBookDTO = BookMapper.toDTO(reservedBook);
+        BookResponseDTO reservedBookDTO = BookMapper.toResponseDTO(reservedBook);
         return new ResponseEntity<>(reservedBookDTO, HttpStatus.OK);
     }
 

@@ -1,4 +1,4 @@
-package com.example.bibliotekaonline.dto;
+package com.example.bibliotekaonline.dto.response;
 
 import com.example.bibliotekaonline.model.Book;
 import lombok.AllArgsConstructor;
@@ -8,13 +8,13 @@ import java.util.List;
 
 @AllArgsConstructor
 @Data
-public class UserDTO {
+public class UserResponseDTO {
     private long id;
     private String name;
     private String email;
     private String password;
-    private List<Book> reservedBooks;
-    private List<Book> borrowedBooks;
-    private List<Book> borrowHistory;
+    private List<BookResponseDTO> reservedBooks;
+    private List<BookResponseDTO> borrowedBooks;
+    private List<BookResponseDTO> borrowHistory;
     private List<String> roles;
 }

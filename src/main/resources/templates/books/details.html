@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.w3.org/1999/xhtml"
+>
   <head>
     <title>Book Details</title>
     <link
@@ -12,23 +15,6 @@
   <body>
     <div th:replace="~{fragments :: header}"></div>
     <div class="container mt-5">
-      <form th:action="@{/books/{id}/rating(id=${book.id})}" method="post">
-        <div class="form-group">
-          <label for="rating">Add a Review:</label>
-          <input
-            type="number"
-            id="rating"
-            name="rating"
-            class="form-control"
-            min="1"
-            max="5"
-            required
-          />
-        </div>
-        <button type="submit" class="btn btn-primary mt-2">
-          Submit Review
-        </button>
-      </form>
       <div class="card">
         <div class="card-header">
           <h2 th:text="${book.title}">Book Title</h2>
@@ -72,9 +58,9 @@
             <span th:text="${book.numPages}">Number of Pages</span>
           </p>
           <a
-                  th:href="@{/users/{userId}/reserve/{id}(userId=${user.getId()}, id=${book.getId()})}"
-                  class="btn btn-success"
-          >Reserve</a
+            th:href="@{/users/{userId}/reserve/{id}(userId=${user.getId()}, id=${book.getId()})}"
+            class="btn btn-success"
+            >Reserve</a
           >
         </div>
         <div class="comments mt-3">
@@ -91,6 +77,12 @@
                 class="form-control"
                 rows="3"
               ></textarea>
+              <div th:if="${#fields.hasErrors('text')}" class="text-danger">
+                <p
+                  th:each="err : ${#fields.errors('text')}"
+                  th:text="${err}"
+                ></p>
+              </div>
             </div>
             <button type="submit" class="btn btn-primary mt-2">
               Post Comment
@@ -98,19 +90,46 @@
           </form>
           <h6>Comments:</h6>
           <div th:each="comment : ${book.comments}">
+            <p th:text="${comment.user.getName()}"></p>
+            <p
+              th:text="${#temporals.format(comment.createdAt, 'yyyy-MM-dd HH:mm')}"
+            ></p>
             <p th:text="${comment.text}"></p>
             <div sec:authorize="hasRole('ROLE_ADMIN')">
               <a
-                      th:href="@{/books/{id}/comments/{commentId}/delete(id=${book.id},commentId=${comment.id})}"
-                      class="btn btn-danger"
-              >Delete</a
+                th:href="@{/books/{id}/comments/{commentId}/delete(id=${book.id},commentId=${comment.id})}"
+                class="btn btn-danger"
+                >Delete</a
               >
             </div>
-            <p th:text="${comment.user.getName()}"></p>
           </div>
+        </div>
+        <div class="rating mt-3">
+          <form th:action="@{/books/{id}/rating(id=${book.id})}" method="post">
+            <div class="form-group">
+              <label for="rating">Add a Review:</label>
+              <input
+                type="number"
+                id="rating"
+                name="rating"
+                class="form-control"
+                min="1"
+                max="5"
+                required
+              />
+              <div th:if="${errors}" class="text-danger">
+                <p
+                  th:each="err : ${errors}"
+                  th:text="${err.defaultMessage}"
+                ></p>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-2">
+              Submit Review
+            </button>
+          </form>
         </div>
       </div>
     </div>
-    <div th:replace="~{fragments :: footer}"></div>
   </body>
 </html>

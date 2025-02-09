@@ -54,8 +54,8 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public Book addBookToReserved(long bookId, long userId) {
-        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        Book book = bookService.getBookById(bookId);
+        User user = getUserById(userId);
         
         user.getReservedBooks().add(book);
         userRepository.save(user);
@@ -64,16 +64,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     }
 
     public void removeBookFromReserved(long bookId, long userId) {
-        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
+        Book book = bookService.getBookById(bookId);
+        User user = getUserById(userId);
 
         user.getReservedBooks().remove(book);
         userRepository.save(user);
     }
     @Transactional
     public void borrowBookFromReserved(long bookId, long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
+        User user = getUserById(userId);
+        Book book = bookService.getBookById(bookId);
 
         if (user.getReservedBooks().contains(book)) {
             user.getReservedBooks().remove(book);
@@ -89,8 +89,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Transactional
     public void returnBook(long bookId, long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new EntityNotFoundException("User not found with id: " + userId));
-        Book book = bookService.getBookById(bookId).orElseThrow(() -> new EntityNotFoundException("Book not found with id: " + bookId));
+        User user = getUserById(userId);
+        Book book = bookService.getBookById(bookId);
 
         if (user.getBorrowedBooks().contains(book)) {
             user.getBorrowedBooks().remove(book);

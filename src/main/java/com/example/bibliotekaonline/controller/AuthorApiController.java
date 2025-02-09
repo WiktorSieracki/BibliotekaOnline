@@ -1,6 +1,6 @@
 package com.example.bibliotekaonline.controller;
 
-import com.example.bibliotekaonline.dto.AuthorDTO;
+import com.example.bibliotekaonline.dto.response.AuthorResponseDTO;
 import com.example.bibliotekaonline.mapper.AuthorMapper;
 import com.example.bibliotekaonline.model.Author;
 import com.example.bibliotekaonline.service.AuthorService;
@@ -22,9 +22,9 @@ public class AuthorApiController {
     private AuthorService authorService;
 
     @GetMapping
-    public ResponseEntity<List<AuthorDTO>> getAllAuthors() {
+    public ResponseEntity<List<AuthorResponseDTO>> getAllAuthors() {
         List<Author> authors = authorService.getAllAuthors();
-        List<AuthorDTO> authorDTOs = authors.stream().map(AuthorMapper::toDTO).collect(Collectors.toList());
+        List<AuthorResponseDTO> authorDTOs = authors.stream().map(AuthorMapper::toResponseDTO).collect(Collectors.toList());
         return new ResponseEntity<>(authorDTOs, HttpStatus.OK);
     }
 }

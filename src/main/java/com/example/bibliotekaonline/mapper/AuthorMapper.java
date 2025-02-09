@@ -1,19 +1,19 @@
 package com.example.bibliotekaonline.mapper;
 
-import com.example.bibliotekaonline.dto.AuthorDTO;
+import com.example.bibliotekaonline.dto.request.AuthorRequestDTO;
+import com.example.bibliotekaonline.dto.response.AuthorResponseDTO;
 import com.example.bibliotekaonline.model.Author;
 
 public class AuthorMapper {
-    public static AuthorDTO toDTO(Author author) {
-        AuthorDTO authorDTO = new AuthorDTO();
-        authorDTO.setId(author.getId());
-        authorDTO.setName(author.getName());
-        return authorDTO;
+    public static AuthorResponseDTO toResponseDTO(Author author) {
+        return new AuthorResponseDTO(
+                author.getId(),
+                author.getName()
+        );
     }
 
-    public static Author toEntity(AuthorDTO authorDTO) {
+    public static Author toEntity(AuthorRequestDTO authorDTO) {
         Author author = new Author();
-//        author.setId(authorDTO.getId());
         author.setName(authorDTO.getName());
         return author;
     }

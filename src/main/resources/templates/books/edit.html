@@ -24,44 +24,10 @@
             id="title"
             th:field="*{title}"
             class="form-control"
-            required
           />
-        </div>
-        <div class="form-group">
-          <label for="authors">Authors:</label>
-          <div th:each="author, iterStat : ${book.authors}">
-            <input
-              type="text"
-              th:field="*{authors[__${iterStat.index}__].name}"
-              class="form-control mb-2"
-              required
-            />
+          <div th:if="${#fields.hasErrors('title')}" class="text-danger">
+            <p th:each="err : ${#fields.errors('title')}" th:text="${err}"></p>
           </div>
-          <button
-            type="button"
-            class="btn btn-secondary mt-2"
-            th:onclick="|addAuthorField()|"
-          >
-            Add Author
-          </button>
-        </div>
-        <div class="form-group">
-          <label for="categories">Categories:</label>
-          <div th:each="category, iterStat : ${book.categories}">
-            <input
-              type="text"
-              th:field="*{categories[__${iterStat.index}__]}"
-              class="form-control mb-2"
-              required
-            />
-          </div>
-          <button
-            type="button"
-            class="btn btn-secondary mt-2"
-            th:onclick="|addCategoryField()|"
-          >
-            Add Category
-          </button>
         </div>
         <div class="form-group">
           <label for="description">Description:</label>
@@ -70,8 +36,13 @@
             th:field="*{description}"
             class="form-control"
             rows="3"
-            required
           ></textarea>
+          <div th:if="${#fields.hasErrors('description')}" class="text-danger">
+            <p
+              th:each="err : ${#fields.errors('description')}"
+              th:text="${err}"
+            ></p>
+          </div>
         </div>
         <div class="form-group">
           <label for="publishedYear">Published Year:</label>
@@ -80,8 +51,16 @@
             id="publishedYear"
             th:field="*{publishedYear}"
             class="form-control"
-            required
           />
+          <div
+            th:if="${#fields.hasErrors('publishedYear')}"
+            class="text-danger"
+          >
+            <p
+              th:each="err : ${#fields.errors('publishedYear')}"
+              th:text="${err}"
+            ></p>
+          </div>
         </div>
         <div class="form-group">
           <label for="numPages">Number of Pages:</label>
@@ -90,8 +69,13 @@
             id="numPages"
             th:field="*{numPages}"
             class="form-control"
-            required
           />
+          <div th:if="${#fields.hasErrors('numPages')}" class="text-danger">
+            <p
+              th:each="err : ${#fields.errors('numPages')}"
+              th:text="${err}"
+            ></p>
+          </div>
         </div>
         <div class="form-group">
           <label for="thumbnail">Thumbnail URL:</label>
@@ -101,30 +85,16 @@
             th:field="*{thumbnail}"
             class="form-control"
           />
+          <div th:if="${#fields.hasErrors('thumbnail')}" class="text-danger">
+            <p
+              th:each="err : ${#fields.errors('thumbnail')}"
+              th:text="${err}"
+            ></p>
+          </div>
         </div>
         <button type="submit" class="btn btn-primary mt-2">Save</button>
       </form>
     </div>
     <div th:replace="~{fragments :: footer}"></div>
-
-    <script>
-      function addAuthorField() {
-        const authorsDiv = document.querySelector("#authors");
-        const newAuthorInput = document.createElement("input");
-        newAuthorInput.type = "text";
-        newAuthorInput.name = "authors";
-        newAuthorInput.className = "form-control mb-2";
-        authorsDiv.appendChild(newAuthorInput);
-      }
-
-      function addCategoryField() {
-        const categoriesDiv = document.querySelector("#categories");
-        const newCategoryInput = document.createElement("input");
-        newCategoryInput.type = "text";
-        newCategoryInput.name = "categories";
-        newCategoryInput.className = "form-control mb-2";
-        categoriesDiv.appendChild(newCategoryInput);
-      }
-    </script>
   </body>
 </html>

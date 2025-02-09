@@ -1,6 +1,7 @@
 package com.example.bibliotekaonline.service;
 
-import com.example.bibliotekaonline.dto.CommentDTO;
+import com.example.bibliotekaonline.dto.request.CommentRequestDTO;
+import com.example.bibliotekaonline.dto.response.CommentResponseDTO;
 import com.example.bibliotekaonline.mapper.CommentMapper;
 import com.example.bibliotekaonline.model.Book;
 import com.example.bibliotekaonline.model.Comment;
@@ -10,7 +11,6 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -26,8 +26,8 @@ public class CommentService {
     private CustomUserDetailsService customUserDetailsService;
 
    @Transactional
-    public Comment saveComment(long bookId,long userId, CommentDTO commentDTO) {
-        Book book = bookService.getBookById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+    public Comment saveComment(long bookId,long userId, CommentRequestDTO commentDTO) {
+        Book book = bookService.getBookById(bookId);
         User user = customUserDetailsService.getUserById(userId);
         Comment comment = CommentMapper.toEntity(commentDTO);
         comment.setUser(user);
@@ -42,7 +42,7 @@ public class CommentService {
     }
 
     public List<Comment> getComments(long bookId) {
-        Book book = bookService.getBookById(bookId).orElseThrow(() -> new RuntimeException("Book not found"));
+        Book book = bookService.getBookById(bookId);
         return book.getComments();
     }
 
