@@ -34,7 +34,21 @@ public class UserApiController {
     public ResponseEntity<UserResponseDTO> createUser(@RequestBody UserRequestDTO userDTO) {
         User user = UserMapper.toEntity(userDTO);
         User savedUser = customUserDetailsService.saveUser(user);
-        return new ResponseEntity<>(UserMapper.toResponseDTO(savedUser), HttpStatus.CREATED);
+        UserResponseDTO createdUserDTO = UserMapper.toResponseDTO(savedUser);
+        return new ResponseEntity<>(createdUserDTO, HttpStatus.CREATED);
+    }
+
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable long userId) {
+        customUserDetailsService.deleteUser(userId);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<UserResponseDTO> updateUser(@PathVariable long userId, @RequestBody UserRequestDTO userDTO) {
+        User updatedUser = customUserDetailsService.updateUser(userId, userDTO);
+        UserResponseDTO updatedUserDTO = UserMapper.toResponseDTO(updatedUser);
+        return new ResponseEntity<>(updatedUserDTO, HttpStatus.OK);
     }
 
     @PostMapping("/{userId}/reserve/{bookId}")

@@ -21,12 +21,18 @@ public class BibliotekaOnlineApplication implements CommandLineRunner {
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
 
+    @Autowired
+    private UserRepository userRepository;
+
 
     public static void main(String[] args) {
         ApplicationContext context = SpringApplication.run(BibliotekaOnlineApplication.class, args);
         User user = context.getBean("user", User.class);
         CustomUserDetailsService customUserDetailsService = context.getBean(CustomUserDetailsService.class);
-        customUserDetailsService.saveUser(user);
+        UserRepository userRepository = context.getBean(UserRepository.class);
+        if (!userRepository.existsByEmail(user.getEmail())){
+            customUserDetailsService.saveUser(user);
+        }
 
     }
 

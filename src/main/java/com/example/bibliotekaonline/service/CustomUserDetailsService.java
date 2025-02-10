@@ -1,9 +1,11 @@
 package com.example.bibliotekaonline.service;
 
+import com.example.bibliotekaonline.dto.request.UserRequestDTO;
 import com.example.bibliotekaonline.model.Book;
 import com.example.bibliotekaonline.model.User;
 import com.example.bibliotekaonline.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -118,7 +121,36 @@ public class CustomUserDetailsService implements UserDetailsService {
         if (!userRepository.existsByEmail(user.getEmail())) {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             return userRepository.save(user);
+        }else{
+            throw new EntityExistsException("User already exists with email: " + user.getEmail());
         }
-        return user;
     }
+
+    @Transactional
+    public void deleteUser(long userId) {
+        if (userRepository.existsById(userId)) {
+            userRepository.deleteById(userId);
+        } else {
+            throw new EntityNotFoundException("User not found with id: " + userId);
+        }
+    }
+
+    @Transactional
+    public User updateUser(long userId, UserRequestDTO userDTO) {
+        User existingUser = getUserById(userId);
+        existingUser.setName(userDTO.getName());
+
+        if (!Objects.equals(existingUser.getEmail(), userDTO.getEmail())) {
+            if (userRepository.existsByEmail(userDTO.getEmail())) {
+                throw new EntityExistsException("User already exists with email: " + userDTO.getEmail());
+            }
+            existingUser.setEmail(userDTO.getEmail());
+        }
+
+        if (userDTO.getPassword() != null && !userDTO.getPassword().isEmpty()) {
+            existingUser.setPassword(passwordEncoder.encode(userDTO.getPassword()));
+        }
+
+        return userRepository.save(existingUser);
+}
 }

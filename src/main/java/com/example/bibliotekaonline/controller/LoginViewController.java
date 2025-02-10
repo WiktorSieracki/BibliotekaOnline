@@ -44,8 +44,7 @@ public class LoginViewController {
 
         customUserDetailsService.saveUser(user);
 
-        model.addAttribute("registrationSuccess", true);
-        return "redirect:/login?registrationSuccess";
+        return "redirect:/login?registrationSuccess=true";
     }
 
     @GetMapping("/success")
