@@ -23,12 +23,10 @@ public class Book {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
     @NotEmpty
     @Size(min = 1, max = 255)
     private String title;
 
-    @NotNull
     @NotEmpty
     @ManyToMany(cascade = CascadeType.MERGE)
     @JoinTable(
@@ -38,7 +36,6 @@ public class Book {
     )
     private List<Author> authors;
 
-    @NotNull
     @NotEmpty
     @ElementCollection
     @CollectionTable(name = "book_categories", joinColumns = @JoinColumn(name = "book_id"))

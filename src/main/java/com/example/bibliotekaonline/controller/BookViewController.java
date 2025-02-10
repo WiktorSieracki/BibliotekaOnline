@@ -1,9 +1,14 @@
 package com.example.bibliotekaonline.controller;
 
+import com.example.bibliotekaonline.dto.request.BookRequestDTO;
 import com.example.bibliotekaonline.dto.request.CommentRequestDTO;
 import com.example.bibliotekaonline.dto.response.CommentResponseDTO;
+import com.example.bibliotekaonline.mapper.AuthorMapper;
+import com.example.bibliotekaonline.mapper.BookMapper;
+import com.example.bibliotekaonline.model.Author;
 import com.example.bibliotekaonline.model.Book;
 import com.example.bibliotekaonline.model.User;
+import com.example.bibliotekaonline.service.AuthorService;
 import com.example.bibliotekaonline.service.BookService;
 import com.example.bibliotekaonline.service.CommentService;
 import com.example.bibliotekaonline.service.CustomUserDetailsService;
@@ -22,7 +27,9 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/books")
@@ -36,6 +43,9 @@ public class BookViewController {
 
     @Autowired
     private CustomUserDetailsService customUserDetailsService;
+
+    @Autowired
+    private AuthorService authorService;
 
     @GetMapping
     public String getBooks(Model model,
@@ -93,19 +103,18 @@ public class BookViewController {
     }
 
     @PostMapping("/{id}/rating")
-    public String addRating(@PathVariable Long id, @RequestParam @Min(1) @Max(5) int rating, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            Book book = bookService.getBookById(id);
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String email = authentication.getName();
-            User user = customUserDetailsService.getUserByEmail(email);
-            model.addAttribute("user", user);
-            model.addAttribute("book", book);
-            model.addAttribute("errors", bindingResult.getAllErrors());
-            return "books/details";
+    public String addRating(@PathVariable Long id, @RequestParam int rating, Model model) {
+        if (rating < 1 || rating > 5) {
+            model.addAttribute("error", "Rating must be between 1 and 5");
+            return "redirect:/books/" + id;
         }
         Book book = bookService.getBookById(id);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = customUserDetailsService.getUserByEmail(email);
         bookService.postBookReview(book, rating);
+        model.addAttribute("user", user);
+        model.addAttribute("book", book);
         return "redirect:/books/" + id;
     }
 
@@ -117,15 +126,23 @@ public class BookViewController {
 
     @GetMapping("/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
+        List<Author> allAuthors = authorService.getAllAuthors();
+        List<String> allCategories = Arrays.asList("Fiction", "Non-Fiction", "Science", "History", "Biography");
         Book book = bookService.getBookById(id);
-        model.addAttribute("book", book);
+        model.addAttribute("book", BookMapper.toResponseDTO(book));
+        model.addAttribute("allAuthors", allAuthors.stream().map(AuthorMapper::toResponseDTO).collect(Collectors.toList()));
+        model.addAttribute("allCategories", allCategories);
         return "books/edit";
     }
 
     @PostMapping("/edit/{id}")
     public String updateBook(@PathVariable Long id, @Valid @ModelAttribute Book book, BindingResult bindingResult, Model model) {
+        List<Author> allAuthors = authorService.getAllAuthors();
+        List<String> allCategories = Arrays.asList("Fiction", "Non-Fiction", "Science", "History", "Biography");
         if (bindingResult.hasErrors()) {
-            model.addAttribute("book", book);
+            model.addAttribute("book", BookMapper.toResponseDTO(book));
+            model.addAttribute("allAuthors", allAuthors.stream().map(AuthorMapper::toResponseDTO).collect(Collectors.toList()));
+            model.addAttribute("allCategories", allCategories);
             model.addAttribute("errors", bindingResult.getAllErrors());
             return "books/edit";
         }
@@ -136,14 +153,22 @@ public class BookViewController {
     @GetMapping("/create")
     public String showCreateForm(Model model) {
         model.addAttribute("book", new Book());
+        List<Author> allAuthors = authorService.getAllAuthors();
+        model.addAttribute("allAuthors", allAuthors.stream().map(AuthorMapper::toResponseDTO).collect(Collectors.toList()));
+        List<String> allCategories = Arrays.asList("Fiction", "Non-Fiction", "Science", "History", "Biography");
+        model.addAttribute("allCategories", allCategories);
         return "books/create";
     }
 
     @PostMapping("/create")
-    public String createBook(@Valid @ModelAttribute Book book, BindingResult bindingResult, Model model) {
-        if (bindingResult.hasErrors()) {
-            model.addAttribute("book", book);
-            model.addAttribute("errors", bindingResult.getAllErrors());
+    public String createBook(@ModelAttribute("book") @Valid Book book, BindingResult result, Model model) {
+        List<Author> allAuthors = authorService.getAllAuthors();
+        List<String> allCategories = Arrays.asList("Fiction", "Non-Fiction", "Science", "History", "Biography");
+        if (result.hasErrors()) {
+            model.addAttribute("book", BookMapper.toResponseDTO(book));
+            model.addAttribute("allAuthors", allAuthors.stream().map(AuthorMapper::toResponseDTO).collect(Collectors.toList()));
+            model.addAttribute("allCategories", allCategories);
+            model.addAttribute("errors", result.getAllErrors());
             return "books/create";
         }
         bookService.saveBook(book);

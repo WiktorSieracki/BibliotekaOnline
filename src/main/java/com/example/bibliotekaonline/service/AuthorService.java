@@ -2,6 +2,7 @@ package com.example.bibliotekaonline.service;
 
 import com.example.bibliotekaonline.model.Author;
 import com.example.bibliotekaonline.repository.AuthorRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,15 @@ public class AuthorService {
 
     public List<Author> getAllAuthors() {
         return authorRepository.findAll();
+    }
+
+    public Author getAuthorById(long id) {
+        return authorRepository.findAuthorById(id).orElseThrow(() -> new EntityNotFoundException("Author not found"));
+    }
+
+    public void deleteAuthor(long authorId) {
+        authorRepository.findById(authorId).orElseThrow(() -> new EntityNotFoundException("Author not found"));
+        authorRepository.deleteById(authorId);
     }
 
 }
